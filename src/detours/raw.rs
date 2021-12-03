@@ -53,6 +53,10 @@ impl RawDetour {
     Detour::new(target, detour).map(RawDetour)
   }
 
+  pub unsafe fn with_preferred_prologue(target: *const (), detour: *const (), preferred_prologue: usize) -> Result<Self> {
+    Detour::with_preferred_prologue(target, detour, preferred_prologue).map(RawDetour)
+  }
+
   /// Enables the detour.
   pub unsafe fn enable(&self) -> Result<()> {
     self.0.enable()

@@ -19,6 +19,10 @@ pub struct Detour {
 
 impl Detour {
   pub unsafe fn new(target: *const (), detour: *const ()) -> Result<Self> {
+    Self::with_preferred_prologue(target, detour, arch::meta::prolog_margin(target))
+  }
+
+  pub unsafe fn with_preferred_prologue(target: *const (), detour: *const (), preferred_prologue: usize) -> Result<Self> {
     if target == detour {
       Err(Error::SameAddress)?;
     }
@@ -31,7 +35,7 @@ impl Detour {
     }
 
     // Create a trampoline generator for the target function
-    let margin = arch::meta::prolog_margin(target);
+    let margin = preferred_prologue;
     let trampoline = arch::Trampoline::new(target, margin)?;
 
     // A relay is used in case a normal branch cannot reach the destination
